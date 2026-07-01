@@ -1,4 +1,4 @@
-// Last updated: 01/07/2026, 23:45:49
+// Last updated: 01/07/2026, 23:47:29
 1/**
 2 * Definition for a binary tree node.
 3 * public class TreeNode {
@@ -18,7 +18,7 @@
 17    List<String> list= new ArrayList<>();
 18    public List<String> binaryTreePaths(TreeNode root) {
 19         if (root == null) return list;
-20        solve(root,"");
+20        solve(root,root.val+"");
 21        return list;
 22    }
 23
@@ -26,17 +26,14 @@
 25        if(root==null){
 26            return;
 27        }
-28        if (op.length() == 0)
-29            op = "" + root.val;
-30        else
-31            op = op + "->" + root.val;
-32        if (root.left == null && root.right == null) {
-33            list.add(op);
-34            return;
-35        }
+28        
+29        if (root.left == null && root.right == null) {
+30            list.add(op);
+31            return;
+32        }
+33      
+34        if (root.left != null)solve(root.left,op+"->"+root.left.val);
+35        if (root.right != null)solve(root.right,op+"->"+root.right.val);
 36      
-37        solve(root.left,op);
-38        solve(root.right,op);
-39      
-40    }
-41}
+37    }
+38}
