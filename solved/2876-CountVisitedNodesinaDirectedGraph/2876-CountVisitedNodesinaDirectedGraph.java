@@ -1,4 +1,4 @@
-// Last updated: 02/07/2026, 12:32:07
+// Last updated: 02/07/2026, 12:34:18
 1class Solution {
 2
 3    public class Edge {
@@ -38,37 +38,37 @@
 37        return res;
 38    }
 39
-40    public void dfs(int vertex) {
-41        vis[vertex] = true;
-42        pathvis[vertex] = true;
-43        st.push(vertex);
+40   public void dfs(int vertex){
+41    vis[vertex] = true;
+42    pathvis[vertex] = true;
+43    st.push(vertex);
 44
-45        int child = graph[vertex].get(0).dest;
-46
-47        if (!vis[child]) {
-48            dfs(child);
-49        }
-50        else if (pathvis[child]) {
-51           
+45    for(Edge e : graph[vertex]){
+46        int child = e.dest;
+47
+48        if(!vis[child]){
+49            dfs(child);
+50        }
+51        else if(pathvis[child]){
 52            List<Integer> cycle = new ArrayList<>();
 53
-54            while (st.peek() != child)
+54            while(st.peek() != child)
 55                cycle.add(st.pop());
 56
 57            cycle.add(st.pop());
 58
 59            int len = cycle.size();
 60
-61            for (int x : cycle)
+61            for(int x : cycle)
 62                res[x] = len;
 63        }
-64
-65        if (res[vertex] == 0)
-66            res[vertex] = res[child] + 1;
+64        if(res[vertex] == 0)
+65            res[vertex] = res[child] + 1;
+66    }
 67
-68        pathvis[vertex] = false;
+68    pathvis[vertex] = false;
 69
-70        if (!st.isEmpty() && st.peek() == vertex)
-71            st.pop();
-72    }
+70    if(!st.isEmpty() && st.peek() == vertex)
+71        st.pop();
+72}
 73}
