@@ -1,4 +1,4 @@
-// Last updated: 14/07/2026, 12:07:19
+// Last updated: 14/07/2026, 12:10:08
 1class Solution {
 2    int dp[];
 3    public int fib(int n) {
@@ -15,6 +15,6 @@
 14        if(dp[n]!=-1)return dp[n];
 15
 16
-17        return dp[n]=fib(n-1)+fib(n-2);
+17        return dp[n]=solve(n-1)+solve(n-2);
 18    }
 19}
