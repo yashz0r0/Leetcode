@@ -1,0 +1,9 @@
+// Last updated: 27/07/2026, 08:54:41
+1class Solution {
+2    public int maxProduct(int[] nums) {
+3        Arrays.sort(nums);
+4        int n=nums.length;
+5        return (nums[n-1]-1)*(nums[n-2]-1);
+6        
+7    }
+8}
