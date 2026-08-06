@@ -1,55 +1,65 @@
-// Last updated: 05/08/2026, 21:55:12
+// Last updated: 06/08/2026, 11:21:17
 1class Solution {
 2    public List<Integer> remainingMethods(int n, int k, int[][] invocations) {
-3        List<Integer>[] edges = new ArrayList[n];
-4        for (int i = 0; i < n; i++) {
-5            edges[i] = new ArrayList<>();
-6        }
-7        int[] inDegree = new int[n];
+3    List<List<Integer>> adj = new ArrayList<>();
+4        for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+5        for (int[] inv : invocations) {
+6            adj.get(inv[0]).add(inv[1]);
+7        }
 8
-9        for (int[] inv : invocations) {
-10            edges[inv[0]].add(inv[1]);
-11            inDegree[inv[1]]++;
-12        }
-13
-14        Queue<Integer> queue = new ArrayDeque<>();
-15        queue.offer(k);
-16        boolean[] sus = new boolean[n];
-17        sus[k] = true;
-18
-19
-20        while (!queue.isEmpty()) {
-21            int u = queue.poll();
-22            for (int v : edges[u]) {
-23                inDegree[v]--;
+9        // Step 1: BFS from k to find all affected (suspicious) nodes
+10        boolean[] affected = new boolean[n];
+11        affected[k] = true;
+12        Queue<Integer> queue = new LinkedList<>();
+13        queue.add(k);
+14
+15        while (!queue.isEmpty()) {
+16            int node = queue.poll();
+17            for (int next : adj.get(node)) {
+18                if (!affected[next]) {
+19                    affected[next] = true;
+20                    queue.add(next);
+21                }
+22            }
+23        }
 24
-25                if (!sus[v]) {
-26                    queue.offer(v);
-27                    sus[v] = true;
-28                }
-29            }
-30        }
-31
-32        boolean canRemoveAll = true;
-33        List<Integer> rem = new ArrayList<>();
-34
-35        for (int i = 0; i < n; i++) {
-36            if (sus[i] && inDegree[i] > 0) {
-37                canRemoveAll = false;
-38                break;
-39            } else if (!sus[i]) {
-40                rem.add(i);
-41            }
-42        }
-43
-44        if (!canRemoveAll) {
-45            List<Integer> allNodes = new ArrayList<>(n);
-46            for (int i = 0; i < n; i++) {
-47                allNodes.add(i);
+25        // Step 2: multi-source BFS from all NON-affected nodes
+26        // to check if any affected node is reachable from outside
+27        boolean[] visited = new boolean[n];
+28        Queue<Integer> queue2 = new LinkedList<>();
+29        for (int i = 0; i < n; i++) {
+30            if (!affected[i]) {
+31                visited[i] = true;
+32                queue2.add(i);
+33            }
+34        }
+35
+36        boolean canRemove = true;
+37        while (!queue2.isEmpty()) {
+38            int node = queue2.poll();
+39            for (int next : adj.get(node)) {
+40                if (affected[next]) {
+41                    // a non-affected node reaches an affected node
+42                    canRemove = false;
+43                }
+44                if (!visited[next]) {
+45                    visited[next] = true;
+46                    queue2.add(next);
+47                }
 48            }
-49            return allNodes;
-50        }
-51
-52        return rem;
-53    }
-54}
+49        }
+50
+51        // Step 3: build result
+52        List<Integer> result = new ArrayList<>();
+53        if (!canRemove) {
+54            // return everything
+55            for (int i = 0; i < n; i++) result.add(i);
+56        } else {
+57            // return only non-affected nodes
+58            for (int i = 0; i < n; i++) {
+59                if (!affected[i]) result.add(i);
+60            }
+61        }
+62        return result;
+63    }
+64}
